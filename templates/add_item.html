@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add Menu Item</h1>
+
+<form method="POST" class="form-card">
+
+    <label>Item Name</label>
+    <input
+        type="text"
+        name="item_name"
+        placeholder="e.g. Masala Tea"
+        required
+    >
+
+    <label>Category</label>
+    <input
+        type="text"
+        name="category"
+        placeholder="e.g. Beverage"
+        required
+    >
+
+    <label>Price</label>
+    <input
+        type="number"
+        name="price"
+        step="0.01"
+        min="0"
+        placeholder="e.g. 80"
+        required
+    >
+
+    <label>Stock Quantity</label>
+    <input
+        type="number"
+        name="stock_quantity"
+        min="0"
+        placeholder="e.g. 20"
+        required
+    >
+
+    <div class="form-actions">
+        <button type="submit" class="btn">
+            Add Item
+        </button>
+
+        <a href="{{ url_for('menu') }}" class="cancel-btn">
+            Cancel
+        </a>
+    </div>
+
+</form>
+
+{% endblock %}
