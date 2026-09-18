@@ -1,3 +1,6 @@
 Flask
 mysql-connector-python
 Werkzeug
+pandas
+numpy
+scikit-learn
