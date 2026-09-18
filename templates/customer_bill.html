@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="bill-container">
+
+    <div class="bill-header">
+        <h1>Smart Cafe</h1>
+        <h2>Customer Bill</h2>
+    </div>
+
+    <div class="bill-details">
+
+        <p>
+            <strong>Order ID:</strong>
+            #{{ order.order_id }}
+        </p>
+
+        <p>
+            <strong>Customer:</strong>
+            {{ order.username }}
+        </p>
+
+        <p>
+            <strong>Order Date:</strong>
+            {{ order.order_date }}
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            {{ order.order_status }}
+        </p>
+
+    </div>
+
+    <table class="menu-table bill-table">
+
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for item in order_items %}
+
+            <tr>
+
+                <td>
+                    {{ item.item_name }}
+                </td>
+
+                <td>
+                    ₹{{ "%.2f"|format(item.price) }}
+                </td>
+
+                <td>
+                    {{ item.quantity }}
+                </td>
+
+                <td>
+                    ₹{{ "%.2f"|format(item.subtotal) }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <div class="bill-total">
+        <h2>
+            Total:
+            ₹{{ "%.2f"|format(order.total_amount) }}
+        </h2>
+    </div>
+
+    <div class="bill-actions">
+
+        <button
+            type="button"
+            onclick="window.print()"
+            class="btn print-btn">
+            Print Bill
+        </button>
+
+        <a
+            href="{{ url_for('my_order_details', order_id=order.order_id) }}"
+            class="btn back-btn">
+            Back to Order
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

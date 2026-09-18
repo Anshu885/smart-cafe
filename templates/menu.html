@@ -1,0 +1,559 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+     ===================================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Menu</h1>
+
+        <p>
+            Explore our cafe menu and choose your favorite items.
+        </p>
+
+    </div>
+
+    {% if session.get("role") == "admin" %}
+
+        <a href="{{ url_for('add_item') }}" class="btn">
+            + Add Item
+        </a>
+
+    {% endif %}
+
+</div>
+
+
+<!-- =====================================================
+     SEARCH AND FILTER
+     ===================================================== -->
+
+<div class="menu-filters">
+
+    <form method="GET" action="{{ url_for('menu') }}">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search item..."
+            value="{{ search }}"
+        >
+
+        <select name="category">
+
+            <option value="">
+                All Categories
+            </option>
+
+            {% for category in categories %}
+
+                <option
+                    value="{{ category.category }}"
+                    {% if selected_category == category.category %}
+                        selected
+                    {% endif %}
+                >
+                    {{ category.category }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button type="submit" class="btn">
+            Search
+        </button>
+
+        <a
+            href="{{ url_for('menu') }}"
+            class="clear-btn"
+        >
+            Clear
+        </a>
+
+    </form>
+
+</div>
+
+
+<!-- =====================================================
+     MENU CARDS
+     ===================================================== -->
+
+{% if items %}
+
+<div class="food-grid">
+
+    {% for item in items %}
+
+    <div class="food-card">
+
+
+        <!-- =================================================
+             FOOD IMAGE
+             ================================================= -->
+
+        <div class="food-image">
+
+            {% if item.item_name == "Masala Tea" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=800&q=80"
+                    alt="Masala Tea"
+                >
+
+            {% elif item.item_name == "Cold Coffee" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1571328003758-4a3921661729?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Cold Coffee"
+                >
+
+            {% elif item.item_name == "Hot Chocolate" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=800&q=80"
+                    alt="Hot Chocolate"
+                >
+
+            {% elif item.item_name == "Hazelnut Iced Latte" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1527678357412-ef45dfbd9ecc?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Hazelnut Iced Latte"
+                >
+
+            {% elif item.item_name == "Mango Cheesecake Shake" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Mango Cheesecake Shake"
+                >
+
+            {% elif item.item_name == "Oreo Mint Shake" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1641665271888-575e46923776?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Oreo Mint Shake"
+                >
+
+            {% elif item.item_name == "Virgin Mojito" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80"
+                    alt="Virgin Mojito"
+                >
+
+            {% elif item.item_name == "Peach Iced Tea" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1676693420436-7fa448f054eb?q=80&w=719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Peach Iced Tea"
+                >
+
+            {% elif item.item_name == "Cappuccino" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1621135177072-57c9b6242e7a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Cappuccino"
+                >
+
+            {% elif item.item_name == "Espresso Shot" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=800&q=80"
+                    alt="Espresso Shot"
+                >
+
+            {% elif item.item_name == "Caffè Latte" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1593443320739-77f74939d0da?q=80&w=736&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Caffè Latte"
+                >
+
+            {% elif item.item_name == "Signature Cold Brew" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80"
+                    alt="Signature Cold Brew"
+                >
+
+            {% elif item.item_name == "Caramel Macchiato" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1662047102608-a6f2e492411f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Caramel Macchiato"
+                >
+
+            {% elif item.item_name == "Chocolate Brownie" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80"
+                    alt="Chocolate Brownie"
+                >
+
+            {% elif item.item_name == "Lotus Biscoff Cheesecake Jar" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&q=80"
+                    alt="Lotus Biscoff Cheesecake Jar"
+                >
+
+            {% elif item.item_name == "Classic Tiramisu" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1698688334089-c68105801d02?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Classic Tiramisu"
+                >
+
+            {% elif item.item_name == "Blueberry Muffin" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&w=800&q=80"
+                    alt="Blueberry Muffin"
+                >
+
+            {% elif item.item_name == "Cinnamon Roll" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1609126979532-0f514232d1a8?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Cinnamon Roll"
+                >
+
+            {% elif item.item_name == "Veg Sandwich" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1621852004158-f3bc188ace2d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Veg Sandwich"
+                >
+
+            {% elif item.item_name == "Paneer Tikka Grilled Sandwich" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80"
+                    alt="Paneer Tikka Grilled Sandwich"
+                >
+
+            {% elif item.item_name == "Peri-Peri French Fries" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80"
+                    alt="Peri-Peri French Fries"
+                >
+
+            {% elif item.item_name == "Garlic Cheese Toast" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1584776296944-ab6fb57b0bdd?auto=format&fit=crop&w=800&q=80"
+                    alt="Garlic Cheese Toast"
+                >
+
+            {% elif item.item_name == "Loaded Cheese Nachos" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Loaded Cheese Nachos"
+                >
+
+            {% elif item.item_name == "Truffle Mushroom Toast" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1708725741805-390cb4f3319f?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Truffle Mushroom Toast"
+                >
+
+            {% elif item.item_name == "Cheese Corn Balls" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1751199393301-1fcbd21bd34d?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Cheese Corn Balls"
+                >
+
+            {% elif item.item_name == "Pesto Veggie Wrap" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1666819615040-eff5e52c778a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Pesto Veggie Wrap"
+                >
+
+            {% elif item.item_name == "Chicken Tikka Wrap" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=800&q=80"
+                    alt="Chicken Tikka Wrap"
+                >
+
+            {% elif item.item_name == "Classic French Toast" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=749&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Classic French Toast"
+                >
+
+            {% elif item.item_name == "Masala Cheese Omelette" %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=800&q=80"
+                    alt="Masala Cheese Omelette"
+                >
+
+            {% endif %}
+
+
+            <!-- AVAILABILITY BADGE -->
+
+            {% if item.stock_quantity > 0 %}
+
+                <span class="food-available">
+                    Available
+                </span>
+
+            {% else %}
+
+                <span class="food-unavailable">
+                    Out of Stock
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             FOOD INFORMATION
+             ================================================= -->
+
+        <div class="food-info">
+
+            <div class="food-category">
+                {{ item.category }}
+            </div>
+
+
+            <!-- ITEM NAME - NOT A LINK -->
+
+            <h3>
+                {{ item.item_name }}
+            </h3>
+
+
+            <!-- POPULAR PAIRINGS LINK -->
+
+            <a
+                href="{{ url_for('menu_item', item_id=item.item_id) }}"
+                class="popular-pairings-link"
+            >
+                ✨ See popular pairings →
+            </a>
+
+
+            <div class="food-bottom">
+
+                <span class="food-price">
+                    ₹{{ "%.2f"|format(item.price) }}
+                </span>
+
+
+                {% if session.get("role") == "admin" %}
+
+                    <!-- ADMIN ACTIONS -->
+
+                    <div class="food-admin-actions">
+
+                        <a
+                            href="{{ url_for('edit_item', item_id=item.item_id) }}"
+                            class="food-edit-btn"
+                        >
+                            Edit
+                        </a>
+
+                        <form
+                            action="{{ url_for('delete_item', item_id=item.item_id) }}"
+                            method="POST"
+                        >
+
+                            <button
+                                type="submit"
+                                class="food-delete-btn"
+                                onclick="return confirm('Are you sure you want to delete this item?');"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                {% else %}
+
+                    <!-- CUSTOMER ACTIONS -->
+
+                    {% if item.stock_quantity > 0 %}
+
+                        <form
+                            action="{{ url_for('add_to_cart', item_id=item.item_id) }}"
+                            method="POST"
+                            class="food-cart-form"
+                        >
+
+                            <input
+                                type="number"
+                                name="quantity"
+                                value="1"
+                                min="1"
+                                max="{{ item.stock_quantity }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="food-cart-btn"
+                            >
+                                Add to Cart
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <button
+                            type="button"
+                            class="food-cart-btn disabled"
+                            disabled
+                        >
+                            Not Available
+                        </button>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+{% else %}
+
+<!-- =====================================================
+     EMPTY MENU
+     ===================================================== -->
+
+<div class="empty-menu">
+
+    <h3>
+        No menu items found
+    </h3>
+
+    <p>
+        Try another search or category.
+    </p>
+
+</div>
+
+{% endif %}
+
+
+<!-- =====================================================
+     POPULAR PAIRINGS LINK CSS
+     ===================================================== -->
+
+<style>
+
+.popular-pairings-link {
+    display: inline-block;
+    margin-top: 6px;
+    margin-bottom: 4px;
+
+    color: #f97316;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none !important;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.popular-pairings-link:hover,
+.popular-pairings-link:focus,
+.popular-pairings-link:active {
+    color: #ea580c;
+
+    text-decoration: none !important;
+
+    transform: translateX(3px);
+}
+
+
+/* ITEM NAME SHOULD NEVER LOOK LIKE A LINK */
+
+.food-card h3 {
+    margin-bottom: 0;
+}
+
+</style>
+
+
+<!-- =====================================================
+     PRESERVE MENU SCROLL POSITION
+     ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const savedScrollPosition =
+        sessionStorage.getItem("menuScrollPosition");
+
+
+    if (savedScrollPosition !== null) {
+
+        window.scrollTo({
+            top: parseInt(savedScrollPosition),
+            behavior: "instant"
+        });
+
+        sessionStorage.removeItem("menuScrollPosition");
+    }
+
+
+    const cartForms =
+        document.querySelectorAll(".food-cart-form");
+
+
+    cartForms.forEach(function (form) {
+
+        form.addEventListener("submit", function () {
+
+            sessionStorage.setItem(
+                "menuScrollPosition",
+                window.scrollY
+            );
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

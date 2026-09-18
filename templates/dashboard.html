@@ -1,0 +1,1183 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if is_admin %}
+
+<!-- =====================================================
+     ADMIN DASHBOARD
+     ===================================================== -->
+
+<div class="admin-welcome-banner">
+
+    <div class="admin-welcome-content">
+
+        <span class="admin-welcome-small-text">
+            SMART CAFE
+        </span>
+
+        <h1>
+            Welcome back, Admin
+            <span class="admin-welcome-wave">👋</span>
+        </h1>
+
+        <p>
+            Manage your cafe, orders, inventory and business insights from one place.
+        </p>
+
+    </div>
+
+    <div class="admin-welcome-visual">
+
+        <img
+            src="{{ url_for('static', filename='css/images/fbc74339-ec90-4695-98d0-bf087e218f67.png') }}"
+            alt="Smart Cafe"
+        >
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ADMIN KPI CARDS
+     ===================================================== -->
+
+<div class="admin-kpi-grid">
+
+    <div class="admin-kpi-card">
+
+        <div class="admin-kpi-icon menu-kpi-icon">
+            <span>🍽️</span>
+        </div>
+
+        <div class="admin-kpi-content">
+
+            <h3>Menu Items</h3>
+
+            <strong>
+                {{ total_items }}
+            </strong>
+
+            <span>
+                Items in menu
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-kpi-card">
+
+        <div class="admin-kpi-icon orders-kpi-icon">
+            <span>📦</span>
+        </div>
+
+        <div class="admin-kpi-content">
+
+            <h3>Total Orders</h3>
+
+            <strong>
+                {{ total_orders }}
+            </strong>
+
+            <span>
+                Orders received
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-kpi-card">
+
+        <div class="admin-kpi-icon sales-kpi-icon">
+            <span>₹</span>
+        </div>
+
+        <div class="admin-kpi-content">
+
+            <h3>Total Sales</h3>
+
+            <strong>
+                ₹{{ "%.2f"|format(total_sales) }}
+            </strong>
+
+            <span>
+                Revenue generated
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-kpi-card">
+
+        <div class="admin-kpi-icon pending-kpi-icon">
+            <span>⏳</span>
+        </div>
+
+        <div class="admin-kpi-content">
+
+            <h3>Pending Orders</h3>
+
+            <strong>
+                {{ pending_orders }}
+            </strong>
+
+            <span>
+                Need attention
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-kpi-card">
+
+        <div class="admin-kpi-icon stock-kpi-icon">
+            <span>⚠️</span>
+        </div>
+
+        <div class="admin-kpi-content">
+
+            <h3>Low Stock Items</h3>
+
+            <strong>
+                {{ low_stock_items }}
+            </strong>
+
+            <span>
+                Need restocking
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-kpi-card">
+
+        <div class="admin-kpi-icon completed-kpi-icon">
+            <span>✓</span>
+        </div>
+
+        <div class="admin-kpi-content">
+
+            <h3>Completed Sales</h3>
+
+            <strong>
+                {{ completed_sales }}
+            </strong>
+
+            <span>
+                Completed orders
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SALES OVERVIEW + QUICK ACTIONS
+     ===================================================== -->
+
+<div class="admin-dashboard-middle">
+
+
+    <!-- =================================================
+         SALES OVERVIEW
+         ================================================= -->
+
+    <div class="admin-sales-card">
+
+        <div class="admin-section-header">
+
+            <div>
+
+                <span class="admin-section-label">
+                    BUSINESS ANALYTICS
+                </span>
+
+                <h2>
+                    Sales Overview
+                </h2>
+
+                <p>
+                    Monitor your cafe sales performance.
+                </p>
+
+            </div>
+
+            <div class="admin-chart-badge">
+                📈 This Week
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SALES CHART
+             ================================================= -->
+
+        <div class="admin-dashboard-chart">
+
+            <canvas id="adminSalesChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         QUICK ACTIONS
+         ================================================= -->
+
+    <div class="admin-quick-actions">
+
+        <div class="admin-section-header">
+
+            <div>
+
+                <span class="admin-section-label">
+                    SHORTCUTS
+                </span>
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+                <p>
+                    Manage your cafe quickly.
+                </p>
+
+            </div>
+
+            <div class="quick-action-icon">
+                ⚡
+            </div>
+
+        </div>
+
+
+        <div class="quick-action-list">
+
+
+            <!-- ADD MENU ITEM -->
+
+            <a
+                href="{{ url_for('add_item') }}"
+                class="admin-quick-action"
+            >
+
+                <span class="quick-action-symbol">
+                    🍽️
+                </span>
+
+                <div>
+
+                    <strong>
+                        Add Menu Item
+                    </strong>
+
+                    <small>
+                        Add a new food or drink
+                    </small>
+
+                </div>
+
+                <span class="quick-action-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- VIEW ORDERS -->
+
+            <a
+                href="{{ url_for('admin_orders') }}"
+                class="admin-quick-action"
+            >
+
+                <span class="quick-action-symbol">
+                    📦
+                </span>
+
+                <div>
+
+                    <strong>
+                        View Orders
+                    </strong>
+
+                    <small>
+                        Manage customer orders
+                    </small>
+
+                </div>
+
+                <span class="quick-action-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- INVENTORY -->
+
+            <a
+                href="{{ url_for('admin_inventory') }}"
+                class="admin-quick-action"
+            >
+
+                <span class="quick-action-symbol">
+                    🗄️
+                </span>
+
+                <div>
+
+                    <strong>
+                        Check Inventory
+                    </strong>
+
+                    <small>
+                        Monitor stock levels
+                    </small>
+
+                </div>
+
+                <span class="quick-action-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="{{ url_for('admin_reports') }}"
+                class="admin-quick-action"
+            >
+
+                <span class="quick-action-symbol">
+                    📊
+                </span>
+
+                <div>
+
+                    <strong>
+                        View Reports
+                    </strong>
+
+                    <small>
+                        Analyze cafe performance
+                    </small>
+
+                </div>
+
+                <span class="quick-action-arrow">
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     RECENT ORDERS
+     ===================================================== -->
+
+<div class="admin-recent-orders">
+
+    <div class="admin-section-header">
+
+        <div>
+
+            <span class="admin-section-label">
+                ORDER ACTIVITY
+            </span>
+
+            <h2>
+                Recent Orders
+            </h2>
+
+            <p>
+                Latest customer orders and their current status.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('admin_orders') }}"
+            class="admin-view-all-btn"
+        >
+            View All Orders →
+        </a>
+
+    </div>
+
+
+    <div class="admin-orders-table-wrapper">
+
+        <table class="orders-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Order ID
+                    </th>
+
+                    <th>
+                        Customer
+                    </th>
+
+                    <th>
+                        Total Amount
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% if recent_orders %}
+
+                    {% for order in recent_orders %}
+
+                    <tr>
+
+                        <td>
+
+                            <span class="order-id">
+                                #{{ order.order_id }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="customer-name">
+                                {{ order.username }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="order-amount">
+                                ₹{{ "%.2f"|format(order.total_amount) }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="order-status
+                                {% if order.order_status == 'Pending' %}
+                                    status-pending
+                                {% elif order.order_status == 'Preparing' %}
+                                    status-preparing
+                                {% elif order.order_status == 'Ready' %}
+                                    status-ready
+                                {% elif order.order_status == 'Completed' %}
+                                    status-completed
+                                {% endif %}
+                            ">
+
+                                {{ order.order_status }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="order-date">
+                                {{ order.order_date }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                href="{{ url_for('admin_order_details', order_id=order.order_id) }}"
+                                class="order-view-btn"
+                            >
+                                View
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="text-align:center;"
+                        >
+                            No orders available.
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SALES GRAPH JAVASCRIPT
+     ===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const canvas =
+        document.getElementById("adminSalesChart");
+
+    if (!canvas) {
+        return;
+    }
+
+
+    /* =================================================
+       SALES DATA FROM FLASK
+       ================================================= */
+
+    const salesOverview =
+        {{ sales_overview | default([], true) | tojson }};
+
+
+    /* =================================================
+       CREATE 7 DAYS
+       ================================================= */
+
+    const labels = [];
+
+    const salesValues = [];
+
+
+    const today = new Date();
+
+
+    for (let i = 6; i >= 0; i--) {
+
+        const date = new Date(today);
+
+        date.setDate(
+            today.getDate() - i
+        );
+
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+
+        const dateKey =
+            `${year}-${month}-${day}`;
+
+
+        labels.push(
+            date.toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short"
+                }
+            )
+        );
+
+
+        const matchingSale =
+            salesOverview.find(
+                sale => {
+
+                    if (!sale.sale_date) {
+                        return false;
+                    }
+
+
+                    const saleDate =
+                        new Date(
+                            sale.sale_date
+                        );
+
+                    const saleYear =
+                        saleDate.getFullYear();
+
+                    const saleMonth =
+                        String(
+                            saleDate.getMonth() + 1
+                        ).padStart(2, "0");
+
+                    const saleDay =
+                        String(
+                            saleDate.getDate()
+                        ).padStart(2, "0");
+
+
+                    const saleDateKey =
+                        `${saleYear}-${saleMonth}-${saleDay}`;
+
+
+                    return saleDateKey === dateKey;
+
+                }
+            );
+
+
+        if (matchingSale) {
+
+            salesValues.push(
+                Number(
+                    matchingSale.daily_sales || 0
+                )
+            );
+
+        } else {
+
+            salesValues.push(0);
+
+        }
+
+    }
+
+
+    /* =================================================
+       CREATE CHART
+       ================================================= */
+
+    new Chart(
+        canvas,
+        {
+
+            type: "line",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+
+                        label: "Sales",
+
+                        data: salesValues,
+
+                        tension: 0.4,
+
+                        fill: true,
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 6,
+
+                        borderWidth: 3
+
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+
+                interaction: {
+
+                    intersect: false,
+
+                    mode: "index"
+
+                },
+
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    },
+
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function (context) {
+
+                                return (
+                                    " Sales: ₹" +
+                                    Number(
+                                        context.raw || 0
+                                    ).toFixed(2)
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+
+                scales: {
+
+                    x: {
+
+                        grid: {
+
+                            display: false
+
+                        }
+
+                    },
+
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            callback: function (value) {
+
+                                return "₹" + value;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+});
+
+</script>
+
+
+{% else %}
+
+<!-- =====================================================
+     CUSTOMER DASHBOARD
+     ===================================================== -->
+
+<div class="customer-welcome-banner">
+
+    <div class="customer-welcome-content">
+
+        <span class="welcome-small-text">
+            SMART CAFE
+        </span>
+
+        <h1>
+
+            Welcome back,
+            {{ session.get('username') }}
+
+            <span class="welcome-wave">
+                👋
+            </span>
+
+        </h1>
+
+        <p>
+            Enjoy your favorite food and drinks!
+        </p>
+
+    </div>
+
+
+    <div class="customer-welcome-visual">
+
+        <img
+            src="{{ url_for('static', filename='css/images/fbc74339-ec90-4695-98d0-bf087e218f67.png') }}"
+            alt="Smart Cafe Food"
+        >
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CUSTOMER SUMMARY CARDS
+     ===================================================== -->
+
+<div class="customer-dashboard-cards">
+
+
+    <!-- MY ORDERS -->
+
+    <div class="customer-dashboard-card">
+
+        <div class="dashboard-card-icon orders-icon">
+            <span>📋</span>
+        </div>
+
+        <div class="dashboard-card-content">
+
+            <h3>
+                My Orders
+            </h3>
+
+            <strong>
+                {{ my_total_orders }}
+            </strong>
+
+            <a href="{{ url_for('my_orders') }}">
+                View All →
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- MY PENDING ORDERS -->
+
+    <div class="customer-dashboard-card">
+
+        <div class="dashboard-card-icon pending-icon">
+            <span>⏳</span>
+        </div>
+
+        <div class="dashboard-card-content">
+
+            <h3>
+                My Pending Orders
+            </h3>
+
+            <strong>
+                {{ my_pending_orders }}
+            </strong>
+
+            <a href="{{ url_for('my_orders') }}">
+                View All →
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- CART -->
+
+    <div class="customer-dashboard-card">
+
+        <div class="dashboard-card-icon cart-icon">
+            <span>🛒</span>
+        </div>
+
+        <div class="dashboard-card-content">
+
+            {% set cart_items = session.get("cart", {}) %}
+            {% set cart_count = cart_items.values() | sum %}
+
+            <h3>
+                Your Cart
+            </h3>
+
+            <strong>
+                {{ cart_count }}
+            </strong>
+
+            <span class="cart-item-text">
+
+                {% if cart_count > 0 %}
+
+                    {{ cart_count }}
+                    item{% if cart_count != 1 %}s{% endif %}
+
+                {% else %}
+
+                    Your cart is empty
+
+                {% endif %}
+
+            </span>
+
+            <a href="{{ url_for('cart') }}">
+                Open Cart →
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LATEST ORDER + PROMO
+     ===================================================== -->
+
+<div class="customer-dashboard-bottom">
+
+    {% if recent_order %}
+
+    <div class="customer-latest-order">
+
+        <div class="latest-order-header">
+
+            <div>
+
+                <h2>
+                    Latest Order
+                </h2>
+
+                <p>
+                    Your most recent order
+                </p>
+
+            </div>
+
+            <div class="latest-order-icon">
+                <span>📋</span>
+            </div>
+
+        </div>
+
+
+        <div class="latest-order-content">
+
+            <div class="latest-order-main">
+
+                <span class="latest-order-label">
+                    Order
+                </span>
+
+                <strong>
+                    #{{ recent_order.order_id }}
+                </strong>
+
+            </div>
+
+
+            <div class="latest-order-info">
+
+
+                <!-- AMOUNT -->
+
+                <div>
+
+                    <span>
+                        Amount
+                    </span>
+
+                    <strong>
+                        ₹{{ "%.2f"|format(recent_order.total_amount) }}
+                    </strong>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div>
+
+                    <span>
+                        Status
+                    </span>
+
+                    <span class="order-status
+                        {% if recent_order.order_status == 'Pending' %}
+                            status-pending
+                        {% elif recent_order.order_status == 'Preparing' %}
+                            status-preparing
+                        {% elif recent_order.order_status == 'Ready' %}
+                            status-ready
+                        {% elif recent_order.order_status == 'Completed' %}
+                            status-completed
+                        {% endif %}
+                    ">
+
+                        {{ recent_order.order_status }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div>
+
+                    <span>
+                        Date
+                    </span>
+
+                    <strong>
+                        {{ recent_order.order_date }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('my_order_details', order_id=recent_order.order_id) }}"
+                class="latest-order-btn"
+            >
+                View Order
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+
+    <div class="customer-latest-order">
+
+        <div class="latest-order-header">
+
+            <div>
+
+                <h2>
+                    Latest Order
+                </h2>
+
+                <p>
+                    You haven't placed an order yet.
+                </p>
+
+            </div>
+
+            <div class="latest-order-icon">
+                <span>📋</span>
+            </div>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('menu') }}"
+            class="latest-order-btn"
+        >
+            Browse Menu
+        </a>
+
+    </div>
+
+
+    {% endif %}
+
+
+    <!-- PROMO CARD -->
+
+    <div class="customer-promo-card">
+
+        <div class="promo-content">
+
+            <span class="promo-label">
+                SMART CAFE
+            </span>
+
+            <h2>
+                Craving something tasty?
+            </h2>
+
+            <p>
+                Explore our menu and order your favorite cafe items.
+            </p>
+
+            <a
+                href="{{ url_for('menu') }}"
+                class="promo-btn"
+            >
+                Browse Menu →
+            </a>
+
+        </div>
+
+
+        <div class="promo-visual">
+            🍰
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

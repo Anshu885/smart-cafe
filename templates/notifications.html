@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Notifications</h1>
+
+        <p>
+            Stay updated with your orders and account activity.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="notifications-page">
+
+
+    {% if notifications %}
+
+        <div class="notifications-header">
+
+            <div>
+                <h2>Recent Notifications</h2>
+
+                <span>
+                    {{ notifications|length }} notification{% if notifications|length != 1 %}s{% endif %}
+                </span>
+            </div>
+
+
+            <form
+                action="{{ url_for('mark_all_notifications_read') }}"
+                method="POST"
+            >
+
+                <button
+                    type="submit"
+                    class="notification-read-all-btn"
+                >
+                    Mark all as read
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="notification-list">
+
+
+            {% for notification in notifications %}
+
+                <div
+                    class="notification-card {% if not notification.is_read %}unread{% endif %}"
+                >
+
+
+                    <div class="notification-icon">
+
+                        {% if notification.notification_type == "Order" %}
+
+                            🔔
+
+                        {% else %}
+
+                            🔔
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="notification-content">
+
+
+                        <div class="notification-top">
+
+
+                            <h3>
+                                {{ notification.notification_type }}
+                            </h3>
+
+
+                            {% if not notification.is_read %}
+
+                                <span class="notification-new">
+                                    New
+                                </span>
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                        <p>
+                            {{ notification.message }}
+                        </p>
+
+
+                        <small>
+
+                            {{ notification.created_at }}
+
+                            {% if notification.order_id %}
+
+                                • Order #{{ notification.order_id }}
+
+                            {% endif %}
+
+                        </small>
+
+
+                    </div>
+
+
+                    {% if not notification.is_read %}
+
+                        <form
+                            action="{{ url_for(
+                                'mark_notification_read',
+                                notification_id=notification.notification_id
+                            ) }}"
+                            method="POST"
+                        >
+
+                            <button
+                                type="submit"
+                                class="notification-read-btn"
+                            >
+                                Mark as read
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+
+                </div>
+
+            {% endfor %}
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="notifications-empty">
+
+            <div class="notifications-empty-icon">
+                🔔
+            </div>
+
+            <h2>
+                No notifications
+            </h2>
+
+            <p>
+                You're all caught up.
+            </p>
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="notification-dashboard-btn"
+            >
+                Back to Dashboard
+            </a>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

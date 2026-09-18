@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Order #{{ order.order_id }}</h1>
+        <p>View your order details and current status.</p>
+    </div>
+</div>
+
+
+<!-- ORDER SUMMARY -->
+
+<div class="order-details-grid">
+
+    <div class="order-info-card">
+        <span class="order-info-label">Order ID</span>
+        <strong>#{{ order.order_id }}</strong>
+    </div>
+
+    <div class="order-info-card">
+        <span class="order-info-label">Order Date</span>
+        <strong>{{ order.order_date }}</strong>
+    </div>
+
+    <div class="order-info-card">
+        <span class="order-info-label">Total Amount</span>
+        <strong>₹{{ "%.2f"|format(order.total_amount) }}</strong>
+    </div>
+
+    <div class="order-info-card">
+        <span class="order-info-label">Status</span>
+
+        {% if order.order_status == "Pending" %}
+
+            <span class="order-status status-pending">
+                Pending
+            </span>
+
+        {% elif order.order_status == "Preparing" %}
+
+            <span class="order-status status-preparing">
+                Preparing
+            </span>
+
+        {% elif order.order_status == "Ready" %}
+
+            <span class="order-status status-ready">
+                Ready
+            </span>
+
+        {% elif order.order_status == "Completed" %}
+
+            <span class="order-status status-completed">
+                Completed
+            </span>
+
+        {% else %}
+
+            <span class="order-status">
+                {{ order.order_status }}
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ORDER ITEMS -->
+
+<div class="order-items-section">
+
+    <div class="section-header">
+        <h2>Ordered Items</h2>
+        <p>Items included in order #{{ order.order_id }}</p>
+    </div>
+
+    <div class="orders-table-wrapper">
+
+        <table class="menu-table">
+
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in order_items %}
+
+                <tr>
+
+                    <td>
+                        <strong class="order-item-name">
+                            {{ item.item_name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="quantity-badge">
+                            {{ item.quantity }}
+                        </span>
+                    </td>
+
+                    <td>
+                        ₹{{ "%.2f"|format(item.price) }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ₹{{ "%.2f"|format(item.subtotal) }}
+                        </strong>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- TOTAL -->
+
+<div class="order-total-card">
+
+    <span>Total Order Value</span>
+
+    <strong>
+        ₹{{ "%.2f"|format(order.total_amount) }}
+    </strong>
+
+</div>
+
+
+<!-- ACTIONS -->
+
+<div class="order-details-actions">
+
+    <a
+        href="{{ url_for('my_orders') }}"
+        class="secondary-action-btn"
+    >
+        ← Back to My Orders
+    </a>
+
+    <a
+        href="{{ url_for('customer_bill', order_id=order.order_id) }}"
+        class="primary-action-btn"
+    >
+        View Bill
+    </a>
+
+</div>
+
+{% endblock %}

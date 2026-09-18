@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Add Menu Item</h1>
+<h1>Edit Menu Item</h1>
 
 <form method="POST" class="form-card">
 
@@ -10,7 +10,7 @@
     <input
         type="text"
         name="item_name"
-        placeholder="e.g. Masala Tea"
+        value="{{ item.item_name }}"
         required
     >
 
@@ -18,7 +18,7 @@
     <input
         type="text"
         name="category"
-        placeholder="e.g. Beverage"
+        value="{{ item.category }}"
         required
     >
 
@@ -28,7 +28,7 @@
         name="price"
         step="0.01"
         min="0"
-        placeholder="e.g. 80"
+        value="{{ item.price }}"
         required
     >
 
@@ -37,18 +37,20 @@
         type="number"
         name="stock_quantity"
         min="0"
-        placeholder="e.g. 20"
+        value="{{ item.stock_quantity }}"
         required
     >
 
     <div class="form-actions">
+
         <button type="submit" class="btn">
-            Add Item
+            Update Item
         </button>
 
         <a href="{{ url_for('menu') }}" class="cancel-btn">
             Cancel
         </a>
+
     </div>
 
 </form>

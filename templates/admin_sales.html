@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Sales Records</h1>
+
+{% if sales %}
+
+<table class="menu-table">
+
+    <thead>
+        <tr>
+            <th>Sale ID</th>
+            <th>Order ID</th>
+            <th>Total Sale</th>
+            <th>Sale Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for sale in sales %}
+
+        <tr>
+            <td>#{{ sale.sale_id }}</td>
+
+            <td>
+                #{{ sale.order_id }}
+            </td>
+
+            <td>
+                ₹{{ "%.2f"|format(sale.total_sale) }}
+            </td>
+
+            <td>
+                {{ sale.sale_date }}
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% else %}
+
+<p>No sales records found.</p>
+
+{% endif %}
+
+<br>
+
+<a href="{{ url_for('dashboard') }}" class="btn">
+    Back to Dashboard
+</a>
+
+{% endblock %}

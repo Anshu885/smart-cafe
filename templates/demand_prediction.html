@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Demand Prediction</h1>
+
+<p>
+    ML-based predicted demand for cafe items.
+</p>
+
+<table class="menu-table">
+
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Current Stock</th>
+            <th>Predicted Demand</th>
+            <th>Prediction Status</th>
+            <th>Stock Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for item in predictions %}
+
+        <tr>
+
+            <td>
+                {{ item.item_name }}
+            </td>
+
+            <td>
+                {{ item.current_stock }}
+            </td>
+
+            <td>
+                {% if item.prediction_available %}
+                    {{ "%.2f"|format(item.predicted_demand) }} units
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td>
+
+                {% if item.prediction_available %}
+
+                    <strong>Prediction Available</strong>
+
+                {% else %}
+
+                    <strong>Insufficient Historical Data</strong>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if not item.prediction_available %}
+
+                    <strong>Cannot determine</strong>
+
+                {% elif item.current_stock >= item.predicted_demand %}
+
+                    <strong>Sufficient Stock</strong>
+
+                {% else %}
+
+                    <strong>Low Stock for Predicted Demand</strong>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<br>
+
+<a href="{{ url_for('admin_reports') }}" class="btn">
+    Back to Reports
+</a>
+
+{% endblock %}

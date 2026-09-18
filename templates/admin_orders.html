@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Order Management</h1>
+        <p>View customer orders and manage their status.</p>
+    </div>
+</div>
+
+
+{% if orders %}
+
+<div class="table-section">
+
+    <div class="section-header">
+        <h2>Customer Orders</h2>
+        <p>{{ orders|length }} order(s) found</p>
+    </div>
+
+
+    <div class="orders-table-wrapper">
+
+        <table class="menu-table orders-table">
+
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Order Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for order in orders %}
+
+                <tr>
+
+                    <td>
+                        <strong class="order-id">
+                            #{{ order.order_id }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="customer-name">
+                            {{ order.username }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong class="order-amount">
+                            ₹{{ "%.2f"|format(order.total_amount) }}
+                        </strong>
+                    </td>
+
+                    <td>
+
+                        {% if order.order_status == "Pending" %}
+                            <span class="order-status status-pending">
+                                Pending
+                            </span>
+
+                        {% elif order.order_status == "Preparing" %}
+                            <span class="order-status status-preparing">
+                                Preparing
+                            </span>
+
+                        {% elif order.order_status == "Ready" %}
+                            <span class="order-status status-ready">
+                                Ready
+                            </span>
+
+                        {% elif order.order_status == "Completed" %}
+                            <span class="order-status status-completed">
+                                Completed
+                            </span>
+
+                        {% else %}
+                            <span class="order-status">
+                                {{ order.order_status }}
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        <span class="order-date">
+                            {{ order.order_date }}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{{ url_for('admin_order_details', order_id=order.order_id) }}"
+                            class="order-view-btn"
+                        >
+                            View Details
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% else %}
+
+<div class="empty-orders">
+
+    <div class="empty-orders-icon">🛒</div>
+
+    <h3>No Orders Found</h3>
+
+    <p>There are currently no customer orders to display.</p>
+
+</div>
+
+{% endif %}
+
+
+<div class="orders-actions">
+
+    <a href="{{ url_for('dashboard') }}" class="btn">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Cafe Intelligence System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+{% if session.get('user_id') %}
+
+<!-- =====================================================
+     LOGGED-IN APPLICATION
+     ===================================================== -->
+
+<div class="app-shell">
+
+
+    <!-- =================================================
+         SIDEBAR
+         ================================================= -->
+
+    <aside class="sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <span class="brand-icon">
+
+                <img
+                    src="{{ url_for('static', filename='css/images/cafe.png') }}"
+                    alt="Smart Cafe"
+                >
+
+            </span>
+
+
+            <span class="brand-text">
+                Smart Cafe
+            </span>
+
+        </div>
+
+
+        <!-- SIDEBAR USER -->
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+
+                {{ session.get('username')[0]|upper }}
+
+            </div>
+
+
+            <div class="user-info">
+
+                <strong>
+                    {{ session.get('username') }}
+                </strong>
+
+
+                <small>
+
+                    {% if session.get('role') == 'admin' %}
+
+                        Administrator
+
+                    {% else %}
+
+                        Customer
+
+                    {% endif %}
+
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <small class="sidebar-label">
+            MAIN
+        </small>
+
+
+        <div class="sidebar-section">
+
+
+            <!-- =================================================
+                 DASHBOARD
+                 ================================================= -->
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="sidebar-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+            >
+
+                <span class="nav-icon">
+                    📊
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 MENU
+                 ================================================= -->
+
+            <a
+                href="{{ url_for('menu') }}"
+                class="sidebar-link {% if request.endpoint in ['menu', 'menu_item', 'add_item', 'edit_item'] %}active{% endif %}"
+            >
+
+                <span class="nav-icon">
+                    🍽️
+                </span>
+
+                <span>
+                    Menu
+                </span>
+
+            </a>
+
+
+            {% if session.get('role') == 'admin' %}
+
+
+                <!-- =================================================
+                     ADMIN ORDERS
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('admin_orders') }}"
+                    class="sidebar-link {% if request.endpoint in ['admin_orders', 'admin_order_details', 'update_order_status', 'generate_bill'] %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        📦
+                    </span>
+
+                    <span>
+                        Orders
+                    </span>
+
+                </a>
+
+
+                <!-- =================================================
+                     INVENTORY
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('admin_inventory') }}"
+                    class="sidebar-link {% if request.endpoint in ['admin_inventory', 'update_stock'] %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        🗄️
+                    </span>
+
+                    <span>
+                        Inventory
+                    </span>
+
+                </a>
+
+
+                <!-- =================================================
+                     SALES
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('admin_sales') }}"
+                    class="sidebar-link {% if request.endpoint == 'admin_sales' %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        ₹
+                    </span>
+
+                    <span>
+                        Sales
+                    </span>
+
+                </a>
+
+
+                <!-- =================================================
+                     REPORTS
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('admin_reports') }}"
+                    class="sidebar-link {% if request.endpoint == 'admin_reports' %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        📇
+                    </span>
+
+                    <span>
+                        Sales Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- =================================================
+                     CUSTOMERS
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('admin_customers') }}"
+                    class="sidebar-link {% if request.endpoint == 'admin_customers' %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        👤
+                    </span>
+
+                    <span>
+                        Customers
+                    </span>
+
+                </a>
+
+
+                <!-- =================================================
+                     DEMAND PREDICTION
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('admin_demand_prediction') }}"
+                    class="sidebar-link {% if request.endpoint == 'admin_demand_prediction' %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        📈
+                    </span>
+
+                    <span>
+                        Demand Prediction
+                    </span>
+
+                </a>
+
+
+            {% else %}
+
+
+                <!-- =================================================
+                     CUSTOMER ORDERS
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('my_orders') }}"
+                    class="sidebar-link {% if request.endpoint in ['my_orders', 'my_order_details', 'customer_bill'] %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        📦
+                    </span>
+
+                    <span>
+                        My Orders
+                    </span>
+
+                </a>
+
+
+                <!-- =================================================
+                     CUSTOMER CART
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('cart') }}"
+                    class="sidebar-link {% if request.endpoint in ['cart', 'remove_from_cart', 'increase_quantity', 'decrease_quantity', 'place_order', 'order_confirmation'] %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        🛒
+                    </span>
+
+
+                    <span class="cart-sidebar-text">
+                        Cart
+                    </span>
+
+
+                    {% if session.get('cart') %}
+
+                        <span class="cart-sidebar-badge">
+                            {{ session.get('cart')|length }}
+                        </span>
+
+                    {% endif %}
+
+                </a>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- =================================================
+             SIDEBAR BOTTOM
+             ================================================= -->
+
+        <div class="sidebar-bottom">
+
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="sidebar-link logout-link"
+            >
+
+                <span class="nav-icon">
+                    ↪
+                </span>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN APPLICATION AREA
+         ===================================================== -->
+
+    <div class="app-main">
+
+
+        <!-- =================================================
+             TOPBAR
+             ================================================= -->
+
+        <header class="topbar">
+
+
+            <!-- =================================================
+                 SEARCH
+                 ================================================= -->
+
+            <div class="topbar-search">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+
+                <input
+                    type="text"
+                    placeholder="{% if session.get('role') == 'admin' %}Search menu, orders, customers...{% else %}Search menu items...{% endif %}"
+                >
+
+            </div>
+
+
+
+            <!-- =================================================
+                 TOPBAR RIGHT
+                 ================================================= -->
+
+            <div class="topbar-right">
+
+
+                <!-- =================================================
+                     NOTIFICATION BELL
+                     ================================================= -->
+
+                <a
+                    href="{{ url_for('notifications') }}"
+                    class="notification-link"
+                    title="Notifications"
+                    aria-label="Notifications"
+                >
+
+                    <span class="notification-icon">
+                        🔔
+                    </span>
+
+
+                    {% if unread_notifications is defined and unread_notifications > 0 %}
+
+                        <span class="notification-badge">
+                            {{ unread_notifications }}
+                        </span>
+
+                    {% endif %}
+
+                </a>
+
+
+
+                <!-- =================================================
+                     CUSTOMER CART ICON
+                     ================================================= -->
+
+                {% if session.get('role') != 'admin' %}
+
+                    <a
+                        href="{{ url_for('cart') }}"
+                        class="topbar-cart-link"
+                        title="Cart"
+                        aria-label="Cart"
+                    >
+
+                        <span class="topbar-cart-icon">
+                            🛒
+                        </span>
+
+
+                        {% if session.get('cart') %}
+
+                            <span class="topbar-cart-badge">
+                                {{ session.get('cart')|length }}
+                            </span>
+
+                        {% endif %}
+
+                    </a>
+
+                {% endif %}
+
+
+
+                <!-- =================================================
+                     PROFILE
+                     ================================================= -->
+
+                <div class="topbar-profile">
+
+
+                    <div class="topbar-avatar">
+
+                        {{ session.get('username')[0]|upper }}
+
+                    </div>
+
+
+                    <span>
+
+                        {% if session.get('role') == 'admin' %}
+
+                            Admin
+
+                        {% else %}
+
+                            Hi, {{ session.get('username') }}
+
+                        {% endif %}
+
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =================================================
+             CONTENT AREA
+             ================================================= -->
+
+        <main class="app-content">
+
+
+{% else %}
+
+
+<!-- =====================================================
+     LOGIN / REGISTER
+     ===================================================== -->
+
+<main class="auth-layout">
+
+
+{% endif %}
+
+
+
+<!-- =====================================================
+     FLASH MESSAGES
+     ===================================================== -->
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        <div
+            class="{% if session.get('user_id') %}flash-container{% else %}auth-flash-container{% endif %}"
+        >
+
+            {% for category, message in messages %}
+
+                <div class="flash-message">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endwith %}
+
+
+
+<!-- =====================================================
+     PAGE CONTENT
+     ===================================================== -->
+
+{% block content %}
+
+{% endblock %}
+
+
+
+<!-- =====================================================
+     CLOSE PAGE LAYOUT
+     ===================================================== -->
+
+{% if session.get('user_id') %}
+
+        </main>
+
+    </div>
+
+</div>
+
+
+{% else %}
+
+</main>
+
+{% endif %}
+
+
+
+<!-- =====================================================
+     AUTO HIDE FLASH MESSAGE
+     ===================================================== -->
+
+<script>
+
+    setTimeout(function() {
+
+        const messages =
+            document.querySelectorAll(".flash-message");
+
+        messages.forEach(function(message) {
+
+            message.remove();
+
+        });
+
+    }, 3000);
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1037 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+/* =====================================================
+   INVENTORY DASHBOARD
+   ===================================================== */
+
+.inventory-page {
+    padding-bottom: 30px;
+}
+
+.inventory-header {
+    margin-bottom: 22px;
+}
+
+.inventory-header h1 {
+    margin-bottom: 6px;
+}
+
+.inventory-header p {
+    margin: 0;
+    color: #718096;
+}
+
+
+/* =====================================================
+   KPI CARDS
+   ===================================================== */
+
+.inventory-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.inventory-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    border: 1px solid #edf2f7;
+}
+
+.inventory-card-title {
+    color: #718096;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.inventory-card-value {
+    font-size: 25px;
+    font-weight: 700;
+    color: #172b4d;
+}
+
+.inventory-card-subtitle {
+    margin-top: 6px;
+    color: #8a94a6;
+    font-size: 12px;
+}
+
+
+/* =====================================================
+   ANALYTICS HEADER
+   ===================================================== */
+
+.inventory-section-header {
+    margin-bottom: 16px;
+}
+
+.inventory-section-header h2 {
+    margin-bottom: 4px;
+}
+
+.inventory-section-header p {
+    margin: 0;
+    color: #718096;
+}
+
+
+/* =====================================================
+   CHART GRID
+   ===================================================== */
+
+.inventory-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.inventory-chart-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 18px;
+    min-height: 330px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    border: 1px solid #edf2f7;
+}
+
+.inventory-chart-card h3 {
+    margin: 0 0 4px 0;
+    color: #172b4d;
+    font-size: 16px;
+}
+
+.inventory-chart-card p {
+    margin: 0 0 12px 0;
+    color: #718096;
+    font-size: 13px;
+}
+
+.inventory-chart-wrapper {
+    position: relative;
+    height: 250px;
+}
+
+
+/* =====================================================
+   INVENTORY TABLE
+   ===================================================== */
+
+.inventory-table-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    border: 1px solid #edf2f7;
+    overflow-x: auto;
+}
+
+.inventory-table-card h2 {
+    margin-bottom: 4px;
+}
+
+.inventory-table-card > p {
+    color: #718096;
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 950px;
+}
+
+.inventory-table th {
+    text-align: left;
+    padding: 13px 12px;
+    font-size: 13px;
+    color: #4a5568;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.inventory-table td {
+    padding: 13px 12px;
+    font-size: 13px;
+    color: #4a5568;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.inventory-table tr:hover {
+    background: #fafcff;
+}
+
+
+/* =====================================================
+   STATUS BADGES
+   ===================================================== */
+
+.inventory-status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-sufficient {
+    background: #e6f7ed;
+    color: #16834b;
+}
+
+.status-low {
+    background: #fff3d6;
+    color: #c77a00;
+}
+
+.status-out {
+    background: #ffe4e6;
+    color: #d93025;
+}
+
+.status-insufficient {
+    background: #fff3d6;
+    color: #c77a00;
+}
+
+
+/* =====================================================
+   ACTION
+   ===================================================== */
+
+.inventory-action-btn {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 7px;
+    background: #3182ce;
+    color: white !important;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.inventory-action-btn:hover {
+    background: #2563a5;
+}
+
+
+/* =====================================================
+   BOTTOM BUTTON
+   ===================================================== */
+
+.inventory-bottom-action {
+    margin-top: 20px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 1100px) {
+
+    .inventory-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .inventory-chart-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .inventory-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-card {
+        padding: 16px;
+    }
+
+}
+</style>
+
+
+<div class="inventory-page">
+
+    <!-- =================================================
+         PAGE HEADER
+         ================================================= -->
+
+    <div class="inventory-header">
+
+        <h1>Inventory Management</h1>
+
+        <p>
+            Monitor stock levels, track availability and get smart recommendations.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         CALCULATE INVENTORY VALUES
+         ================================================= -->
+
+    {% set total_items = items|length %}
+
+    {% set low_stock_items = items
+        | selectattr("stock_quantity", "le", 5)
+        | list
+    %}
+
+    {% set out_of_stock_items = items
+        | selectattr("stock_quantity", "equalto", 0)
+        | list
+    %}
+
+    {% set total_stock_value = namespace(value=0) %}
+
+    {% for item in items %}
+
+        {% set total_stock_value.value =
+            total_stock_value.value +
+            (item.price * item.stock_quantity)
+        %}
+
+    {% endfor %}
+
+
+    <!-- =================================================
+         KPI CARDS
+         ================================================= -->
+
+    <div class="inventory-summary">
+
+        <!-- TOTAL ITEMS -->
+
+        <div class="inventory-card">
+
+            <div class="inventory-card-title">
+                Total Items
+            </div>
+
+            <div class="inventory-card-value">
+                {{ total_items }}
+            </div>
+
+            <div class="inventory-card-subtitle">
+                Menu items in inventory
+            </div>
+
+        </div>
+
+
+        <!-- LOW STOCK -->
+
+        <div class="inventory-card">
+
+            <div class="inventory-card-title">
+                Low Stock Items
+            </div>
+
+            <div class="inventory-card-value">
+                {{ low_stock_items|length }}
+            </div>
+
+            <div class="inventory-card-subtitle">
+                Items below threshold
+            </div>
+
+        </div>
+
+
+        <!-- OUT OF STOCK -->
+
+        <div class="inventory-card">
+
+            <div class="inventory-card-title">
+                Out of Stock
+            </div>
+
+            <div class="inventory-card-value">
+                {{ out_of_stock_items|length }}
+            </div>
+
+            <div class="inventory-card-subtitle">
+                Currently unavailable
+            </div>
+
+        </div>
+
+
+        <!-- STOCK VALUE -->
+
+        <div class="inventory-card">
+
+            <div class="inventory-card-title">
+                Total Stock Value
+            </div>
+
+            <div class="inventory-card-value">
+                ₹{{ "%.2f"|format(total_stock_value.value) }}
+            </div>
+
+            <div class="inventory-card-subtitle">
+                Estimated inventory value
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ANALYTICS HEADER
+         ================================================= -->
+
+    <div class="inventory-section-header">
+
+        <h2>Inventory Analytics</h2>
+
+        <p>
+            Graphical representation of stock levels and inventory intelligence.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         THREE GRAPHS
+         ================================================= -->
+
+    <div class="inventory-chart-grid">
+
+
+        <!-- =================================================
+             GRAPH 1 — STOCK STATUS OVERVIEW
+             ================================================= -->
+
+        <div class="inventory-chart-card">
+
+            <h3>Stock Status Overview</h3>
+
+            <p>
+                Current stock levels by category.
+            </p>
+
+            <div class="inventory-chart-wrapper">
+
+                <canvas id="stockCategoryChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             GRAPH 2 — STOCK VS PREDICTED DEMAND
+             ================================================= -->
+
+        <div class="inventory-chart-card">
+
+            <h3>Stock vs Predicted Demand</h3>
+
+            <p>
+                Comparison of current stock and predicted demand.
+            </p>
+
+            <div class="inventory-chart-wrapper">
+
+                <canvas id="stockDemandChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             GRAPH 3 — LOW STOCK ITEMS
+             ================================================= -->
+
+        <div class="inventory-chart-card">
+
+            <h3>Low Stock Items</h3>
+
+            <p>
+                Items that need attention.
+            </p>
+
+            <div class="inventory-chart-wrapper">
+
+                <canvas id="lowStockChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         INVENTORY TABLE
+         ================================================= -->
+
+    <div class="inventory-table-card">
+
+        <h2>Inventory Items</h2>
+
+        <p>
+            Detailed inventory, prediction and recommendation information.
+        </p>
+
+
+        {% if items %}
+
+        <table class="inventory-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Item</th>
+
+                    <th>Category</th>
+
+                    <th>Price</th>
+
+                    <th>Current Stock</th>
+
+                    <th>Predicted Demand</th>
+
+                    <th>Status</th>
+
+                    <th>Recommendation</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <!-- ITEM -->
+
+                    <td>
+                        <strong>
+                            {{ item.item_name }}
+                        </strong>
+                    </td>
+
+
+                    <!-- CATEGORY -->
+
+                    <td>
+                        {{ item.category }}
+                    </td>
+
+
+                    <!-- PRICE -->
+
+                    <td>
+                        ₹{{ "%.2f"|format(item.price) }}
+                    </td>
+
+
+                    <!-- CURRENT STOCK -->
+
+                    <td>
+                        {{ item.stock_quantity }}
+                    </td>
+
+
+                    <!-- PREDICTED DEMAND -->
+
+                    <td>
+
+                        {% if item.prediction_available %}
+
+                            {{ "%.2f"|format(item.predicted_demand) }}
+                            units
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if item.inventory_status == "Insufficient Historical Data" %}
+
+                            <span class="inventory-status status-insufficient">
+                                Insufficient Historical Data
+                            </span>
+
+                        {% elif item.inventory_status == "Out of Stock" %}
+
+                            <span class="inventory-status status-out">
+                                Out of Stock
+                            </span>
+
+                        {% elif item.inventory_status == "Reorder Required" %}
+
+                            <span class="inventory-status status-low">
+                                Reorder Required
+                            </span>
+
+                        {% else %}
+
+                            <span class="inventory-status status-sufficient">
+                                Sufficient Stock
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- RECOMMENDATION -->
+
+                    <td>
+
+                        {% if not item.prediction_available %}
+
+                            Cannot determine
+
+                        {% elif item.suggested_reorder > 0 %}
+
+                            Reorder {{ item.suggested_reorder }} units
+
+                        {% else %}
+
+                            No Reorder Needed
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACTION -->
+
+                    <td>
+
+                        <a
+                            href="{{ url_for('update_stock', item_id=item.item_id) }}"
+                            class="inventory-action-btn"
+                        >
+                            Update Stock
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        {% else %}
+
+            <p>No inventory items found.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =================================================
+         BACK BUTTON
+         ================================================= -->
+
+    <div class="inventory-bottom-action">
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="btn"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CHART.JS
+     ===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+    /*
+     * =====================================================
+     * PREPARE INVENTORY DATA
+     * =====================================================
+     */
+
+    const inventoryItems = [
+
+        {% for item in items %}
+
+        {
+            name: {{ item.item_name|tojson }},
+            category: {{ item.category|tojson }},
+            stock: {{ item.stock_quantity|default(0) }},
+            predictionAvailable:
+                {{ "true" if item.prediction_available else "false" }},
+            predictedDemand:
+                {{ item.predicted_demand|default(0) }}
+        }
+
+        {% if not loop.last %},{% endif %}
+
+        {% endfor %}
+
+    ];
+
+
+    /*
+     * =====================================================
+     * GRAPH 1
+     * STOCK STATUS OVERVIEW
+     *
+     * Shows total current stock grouped by category.
+     * =====================================================
+     */
+
+    const categoryStock = {};
+
+    inventoryItems.forEach(item => {
+
+        if (!categoryStock[item.category]) {
+
+            categoryStock[item.category] = 0;
+
+        }
+
+        categoryStock[item.category] += item.stock;
+
+    });
+
+
+    const categoryLabels =
+        Object.keys(categoryStock);
+
+    const categoryValues =
+        Object.values(categoryStock);
+
+
+    new Chart(
+
+        document.getElementById("stockCategoryChart"),
+
+        {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: categoryLabels,
+
+                datasets: [
+
+                    {
+
+                        label: "Current Stock",
+
+                        data: categoryValues,
+
+                        backgroundColor: [
+                            "#3182ce",
+                            "#48bb78",
+                            "#ed8936",
+                            "#805ad5",
+                            "#f56565",
+                            "#38b2ac",
+                            "#ecc94b"
+                        ],
+
+                        borderWidth: 2,
+
+                        borderColor: "#ffffff"
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "right",
+
+                        labels: {
+
+                            boxWidth: 12,
+
+                            font: {
+
+                                size: 11
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+    /*
+     * =====================================================
+     * GRAPH 2
+     * CURRENT STOCK VS PREDICTED DEMAND
+     *
+     * Only items having a valid prediction are shown.
+     * =====================================================
+     */
+
+    const predictionItems =
+        inventoryItems
+            .filter(item => item.predictionAvailable)
+            .slice(0, 8);
+
+
+    const demandLabels =
+        predictionItems.map(item => item.name);
+
+
+    const currentStockValues =
+        predictionItems.map(item => item.stock);
+
+
+    const predictedDemandValues =
+        predictionItems.map(item => item.predictedDemand);
+
+
+    new Chart(
+
+        document.getElementById("stockDemandChart"),
+
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: demandLabels,
+
+                datasets: [
+
+                    {
+
+                        label: "Current Stock",
+
+                        data: currentStockValues,
+
+                        backgroundColor: "#3182ce"
+
+                    },
+
+                    {
+
+                        label: "Predicted Demand",
+
+                        data: predictedDemandValues,
+
+                        backgroundColor: "#f6ad55"
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Units"
+
+                        }
+
+                    },
+
+                    x: {
+
+                        ticks: {
+
+                            maxRotation: 45,
+
+                            minRotation: 20
+
+                        }
+
+                    }
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+    /*
+     * =====================================================
+     * GRAPH 3
+     * LOW STOCK ITEMS
+     *
+     * Uses the SAME threshold as your existing page:
+     * stock <= 5
+     * =====================================================
+     */
+
+    const lowStockItems =
+        inventoryItems
+            .filter(item => item.stock <= 5)
+            .sort((a, b) => a.stock - b.stock);
+
+
+    const lowStockLabels =
+        lowStockItems.map(item => item.name);
+
+
+    const lowStockValues =
+        lowStockItems.map(item => item.stock);
+
+
+    new Chart(
+
+        document.getElementById("lowStockChart"),
+
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: lowStockLabels,
+
+                datasets: [
+
+                    {
+
+                        label: "Current Stock",
+
+                        data: lowStockValues,
+
+                        backgroundColor: "#f56565"
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                indexAxis: "y",
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    x: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Current Stock"
+
+                        }
+
+                    }
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+</script>
+
+{% endblock %}

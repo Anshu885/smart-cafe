@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="form-card">
+
+    <h1>Smart Cafe</h1>
+
+    <h2>Customer Bill</h2>
+
+    <hr>
+
+    <p>
+        <strong>Order ID:</strong>
+        #{{ order.order_id }}
+    </p>
+
+    <p>
+        <strong>Customer:</strong>
+        {{ order.username }}
+    </p>
+
+    <p>
+        <strong>Order Date:</strong>
+        {{ order.order_date }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ order.order_status }}
+    </p>
+
+    <hr>
+
+    <table class="menu-table">
+
+        <thead>
+
+            <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in order_items %}
+
+            <tr>
+
+                <td>
+                    {{ item.item_name }}
+                </td>
+
+                <td>
+                    ₹{{ "%.2f"|format(item.price) }}
+                </td>
+
+                <td>
+                    {{ item.quantity }}
+                </td>
+
+                <td>
+                    ₹{{ "%.2f"|format(item.subtotal) }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <hr>
+
+    <h2>
+        Total Amount:
+        ₹{{ "%.2f"|format(order.total_amount) }}
+    </h2>
+
+    <br>
+
+    <button
+        onclick="window.print()"
+        class="btn"
+    >
+        Print Bill
+    </button>
+
+    <a
+        href="{{ url_for('admin_order_details', order_id=order.order_id) }}"
+        class="btn"
+    >
+        Back to Order
+    </a>
+
+</div>
+
+{% endblock %}

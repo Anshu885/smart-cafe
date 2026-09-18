@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="form-card">
+
+    <h1>Order Placed Successfully! 🎉</h1>
+
+    <p>Your order has been successfully placed.</p>
+
+    <hr>
+
+    <p>
+        <strong>Order ID:</strong>
+        #{{ order.order_id }}
+    </p>
+
+    <p>
+        <strong>Total Amount:</strong>
+        ₹{{ "%.2f"|format(order.total_amount) }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ order.order_status }}
+    </p>
+
+    <p>
+        <strong>Order Date:</strong>
+        {{ order.order_date }}
+    </p>
+
+    <br>
+
+    <a href="{{ url_for('menu') }}" class="btn">
+        Back to Menu
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Update Stock</h1>
+
+<div class="form-card">
+
+    <h2>{{ item.item_name }}</h2>
+
+    <p>
+        <strong>Category:</strong>
+        {{ item.category }}
+    </p>
+
+    <p>
+        <strong>Current Stock:</strong>
+        {{ item.stock_quantity }}
+    </p>
+
+    <form
+        method="POST"
+        action="{{ url_for('update_stock', item_id=item.item_id) }}"
+    >
+
+        <label for="stock_quantity">
+            <strong>New Stock Quantity</strong>
+        </label>
+
+        <br><br>
+
+        <input
+            type="number"
+            id="stock_quantity"
+            name="stock_quantity"
+            min="0"
+            value="{{ item.stock_quantity }}"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit" class="btn">
+            Update Stock
+        </button>
+
+        <a
+            href="{{ url_for('admin_inventory') }}"
+            class="btn"
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
