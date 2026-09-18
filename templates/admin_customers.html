@@ -1,0 +1,563 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+     ===================================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Customer Insights</h1>
+
+        <p>
+            Customer purchase and order analysis.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CUSTOMER SUMMARY CARDS
+     ===================================================== -->
+
+<div class="dashboard-grid customer-summary-grid">
+
+    <!-- TOTAL CUSTOMERS -->
+
+    <div class="card">
+
+        <h3>Total Customers</h3>
+
+        <p>
+            {{ total_customers }}
+        </p>
+
+    </div>
+
+
+    <!-- TOTAL ORDERS -->
+
+    <div class="card">
+
+        <h3>Total Orders</h3>
+
+        <p>
+            {{ total_orders }}
+        </p>
+
+    </div>
+
+
+    <!-- TOTAL REVENUE -->
+
+    <div class="card">
+
+        <h3>Total Revenue</h3>
+
+        <p>
+            ₹{{ "%.2f"|format(total_revenue) }}
+        </p>
+
+    </div>
+
+
+    <!-- TOP CUSTOMER -->
+
+    {% if top_customer %}
+
+    <div class="card">
+
+        <h3>Top Customer</h3>
+
+        <p>
+            {{ top_customer.username }}
+        </p>
+
+        <small>
+            ₹{{ "%.2f"|format(top_customer.total_spent) }} spent
+        </small>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- FAVORITE ITEM -->
+
+    {% if favorite_item %}
+
+    <div class="card">
+
+        <h3>Favorite Item</h3>
+
+        <p>
+            {{ favorite_item.item_name }}
+        </p>
+
+        <small>
+            {{ favorite_item.quantity_ordered }} units ordered
+        </small>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- MOST POPULAR ITEM -->
+
+    {% if popular_item %}
+
+    <div class="card">
+
+        <h3>Most Popular Item</h3>
+
+        <p>
+            {{ popular_item.item_name }}
+        </p>
+
+        <small>
+            {{ popular_item.total_quantity }} units sold
+        </small>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- =====================================================
+     CUSTOMER ANALYTICS
+     ===================================================== -->
+
+<div class="section-header reports-section">
+
+    <div>
+
+        <h2>Customer Analytics</h2>
+
+        <p>
+            Graphical representation of customer spending and order activity.
+        </p>
+
+    </div>
+
+</div>
+
+
+{% if customers %}
+
+<!-- =====================================================
+     HORIZONTAL CHART LAYOUT
+     ===================================================== -->
+
+<div
+    style="
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items: stretch;
+    "
+>
+
+
+    <!-- =================================================
+         CUSTOMER SPENDING
+         BAR CHART
+         ================================================= -->
+
+    <div
+        class="chart-card"
+        style="
+            height: 390px;
+            min-height: 390px;
+        "
+    >
+
+        <h3>Customer Spending</h3>
+
+        <p>
+            Total amount spent by each customer.
+        </p>
+
+
+        <div
+            style="
+                position: relative;
+                height: 270px;
+                width: 100%;
+            "
+        >
+
+            <canvas id="customerSpendingChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         CUSTOMER ORDER ACTIVITY
+         DOUGHNUT CHART
+         ================================================= -->
+
+    <div
+        class="chart-card"
+        style="
+            height: 390px;
+            min-height: 390px;
+        "
+    >
+
+        <h3>Customer Order Activity</h3>
+
+        <p>
+            Distribution of orders placed by each customer.
+        </p>
+
+
+        <div
+            style="
+                position: relative;
+                height: 270px;
+                width: 100%;
+            "
+        >
+
+            <canvas id="customerOrdersChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     CUSTOMER DATA
+     ===================================================== -->
+
+<script id="customer-data" type="application/json">
+
+[
+    {% for customer in customers %}
+
+    {
+        "name": {{ customer.username | tojson }},
+        "spent": {{ customer.total_spent | default(0) | float }},
+        "orders": {{ customer.total_orders | default(0) | int }}
+    }{% if not loop.last %},{% endif %}
+
+    {% endfor %}
+]
+
+</script>
+
+
+<!-- =====================================================
+     CHART.JS
+     ===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+    /* =================================================
+       READ CUSTOMER DATA
+       ================================================= */
+
+    const customerData = JSON.parse(
+        document.getElementById("customer-data").textContent
+    );
+
+
+    /* =================================================
+       CUSTOMER NAMES
+       ================================================= */
+
+    const customerNames = customerData.map(
+        customer => customer.name
+    );
+
+
+    /* =================================================
+       CUSTOMER SPENDING
+       ================================================= */
+
+    const customerSpending = customerData.map(
+        customer => customer.spent
+    );
+
+
+    /* =================================================
+       CUSTOMER ORDER COUNT
+       ================================================= */
+
+    const customerOrders = customerData.map(
+        customer => customer.orders
+    );
+
+
+    /* =================================================
+       CUSTOMER SPENDING BAR CHART
+       ================================================= */
+
+    const spendingCanvas =
+        document.getElementById("customerSpendingChart");
+
+
+    new Chart(
+        spendingCanvas,
+        {
+            type: "bar",
+
+            data: {
+
+                labels: customerNames,
+
+                datasets: [
+
+                    {
+                        label: "Total Spent",
+
+                        data: customerSpending,
+
+                        borderWidth: 1
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: "Customer"
+
+                        }
+
+                    },
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Amount Spent (₹)"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+    /* =================================================
+       CUSTOMER ORDER ACTIVITY
+       DOUGHNUT CHART
+       ================================================= */
+
+    const ordersCanvas =
+        document.getElementById("customerOrdersChart");
+
+
+    new Chart(
+        ordersCanvas,
+        {
+            type: "doughnut",
+
+            data: {
+
+                labels: customerNames,
+
+                datasets: [
+
+                    {
+                        label: "Total Orders",
+
+                        data: customerOrders,
+
+                        borderWidth: 1
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "55%",
+
+                plugins: {
+
+                    legend: {
+
+                        position: "right"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+</script>
+
+
+{% endif %}
+
+
+<!-- =====================================================
+     CUSTOMER OVERVIEW TABLE
+     ===================================================== -->
+
+{% if customers %}
+
+<div class="table-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>Customer Overview</h2>
+
+            <p>
+                Customer spending and order activity.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <table class="menu-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Customer</th>
+
+                <th>Email</th>
+
+                <th>Total Orders</th>
+
+                <th>Total Spent</th>
+
+                <th>Spending Level</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for customer in customers %}
+
+            <tr>
+
+                <td>
+                    {{ customer.username }}
+                </td>
+
+
+                <td>
+                    {{ customer.email }}
+                </td>
+
+
+                <td>
+                    {{ customer.total_orders }}
+                </td>
+
+
+                <td>
+                    ₹{{ "%.2f"|format(customer.total_spent) }}
+                </td>
+
+
+                <td>
+                    {{ customer.spending_level }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% else %}
+
+<p>
+    No customer data available.
+</p>
+
+{% endif %}
+
+
+<!-- =====================================================
+     BACK BUTTON
+     ===================================================== -->
+
+<br>
+
+<a
+    href="{{ url_for('dashboard') }}"
+    class="btn"
+>
+
+    Back to Dashboard
+
+</a>
+
+
+{% endblock %}
